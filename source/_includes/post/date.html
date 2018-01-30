@@ -1,0 +1,2 @@
+{% if page.date %}{% capture time %}{{ page.date_time_html | date: "%b %d, %Y" }}{% endcapture %}{% endif %}
+{% if post.date %}{% capture time %}{{ post.date_time_html | date: "%b %d, %Y" }}{% endcapture %}{% endif %}

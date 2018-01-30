@@ -1,0 +1,16 @@
+// This File is imported last, and will override other styles in the cascade
+// Add styles here to make changes without digging in too much
+
+article header {
+  position: relative;
+  padding-top: 0;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAABCAYAAACsXeyTAAAAFUlEQVR4AWNIS0sr/v//PwMUDzo+ADqMahmdZfljAAAAAElFTkSuQmCC') bottom left repeat-x;
+}
+
+article header p.meta {
+ text-transform: uppercase;
+ position: relative; /* show date below heading */
+ top: 0;
+}
