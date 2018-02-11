@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://ssbl.github.io/blog/2018/02/10/tail-call-optimization-in-c/</loc>
+<lastmod>2018-02-10T17:00:43-05:00</lastmod>
+</url>
+<url>
 <loc>http://ssbl.github.io/blog/2018/01/31/first-post/</loc>
 <lastmod>2018-01-31T07:51:39-05:00</lastmod>
 </url>
@@ -15,5 +19,14 @@
 </url>
 <url>
 <loc>http://ssbl.github.io/blog/categories/meta/</loc>
+</url>
+<url>
+<loc>http://ssbl.github.io/blog/categories/c/</loc>
+</url>
+<url>
+<loc>http://ssbl.github.io/blog/categories/recursion/</loc>
+</url>
+<url>
+<loc>http://ssbl.github.io/blog/categories/compilers/</loc>
 </url>
 </urlset>

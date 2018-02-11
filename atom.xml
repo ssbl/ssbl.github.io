@@ -4,7 +4,7 @@
   <title><![CDATA[Shubham Lagwankar's website]]></title>
   <link href="http://ssbl.github.io/atom.xml" rel="self"/>
   <link href="http://ssbl.github.io/"/>
-  <updated>2018-01-31T11:13:26-05:00</updated>
+  <updated>2018-02-11T01:12:44-05:00</updated>
   <id>http://ssbl.github.io/</id>
   <author>
     <name><![CDATA[Shubham Lagwankar]]></name>
@@ -12,6 +12,186 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Tail Recursion Optimization in C]]></title>
+    <link href="http://ssbl.github.io/blog/2018/02/10/tail-call-optimization-in-c/"/>
+    <updated>2018-02-10T17:00:43-05:00</updated>
+    <id>http://ssbl.github.io/blog/2018/02/10/tail-call-optimization-in-c</id>
+    <content type="html"><![CDATA[<p>I recently came across a recursive binary search implementation in the
+source code of <a href="https://github.com/ggreer/the_silver_searcher">ag</a>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">binary_search</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">needle</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">char</span> <span class="o">**</span><span class="n">haystack</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">int</span> <span class="n">start</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">int</span> <span class="n">end</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">mid</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">end</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">mid</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">rc</span> <span class="o">=</span> <span class="n">strcmp</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span> <span class="n">haystack</span><span class="p">[</span><span class="n">mid</span><span class="p">]);</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">binary_search</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">mid</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">binary_search</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">mid</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>My first thoughts were: why would one want to incur the cost of using
+recursion when we could use the less-expensive iterative version
+instead? But I figured that this must have occurred to the author of
+the code as well, so I decided to look deeper.</p>
+
+<h2>Tail calls</h2>
+
+<p>The fact that shed the most light on this issue was that the function
+called itself using tail calls: function calls that appear as the last
+statement in the function body. Tail calls are optimized by default in
+functional languages such as Scheme and Haskell, but C is a different
+beast. I could only vaguely remember this quiz on
+<a href="http://ridiculousfish.com/blog/posts/will-it-optimize.html">ridiculousfish&rsquo;s blog</a>, which
+shows how a recursive factorial function is optimized by gcc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">factorial</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using gcc or clang with optimizations turned on, the call to
+<code>factorial</code> will be converted to a loop:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">factorial</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="n">result</span> <span class="o">*=</span> <span class="n">x</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It turns out that this is exactly what happens with our
+<code>binary_search</code> function in ag! With optimizations turned on, this
+is roughly what it compiles to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">binary_search</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">needle</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">char</span> <span class="o">**</span><span class="n">haystack</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">int</span> <span class="n">start</span><span class="p">,</span>
+</span><span class='line'>                  <span class="kt">int</span> <span class="n">end</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">start</span> <span class="o">!=</span> <span class="n">end</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">rc</span> <span class="o">=</span> <span class="n">strcmp</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span> <span class="n">haystack</span><span class="p">[</span><span class="n">mid</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">end</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">start</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">mid</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A note on the <a href="https://godbolt.org/g/3JJymH">generated assembly</a>: the
+generated code first computes <code>end - start</code> to check the loop
+condition, and then <em>reuses</em> this result to compute the value of
+<code>mid</code>. <em>Really</em> cool.</p>
+
+<h2>When can the compiler optimize tail calls?</h2>
+
+<p>This type of optimization can be applied even if the recursive call
+does not appear as the last statement in the function. In such a case,
+the compiler checks if all statements after the call can be moved
+before the call.</p>
+
+<p>Moreover, tail recursion elimination is a subset of tail call
+optimization (TCO) <sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>, which deals with arbitrary tail calls to any
+type of functions. TCO is more involved in C, unlike Scheme, because
+the called function might access variables that are on the calling
+function&rsquo;s stack. One of the benefits of eliminating tail calls is
+that stack frames can be reused. This in turn means that we need to
+guarantee that all variables on the caller&rsquo;s stack can be safely
+deallocated before the tail call. This is not possible when the called
+function accesses variables on the caller&rsquo;s stack.</p>
+
+<h2>Lessons learned</h2>
+
+<p>This little investigation has provided me with a more nuanced view
+of recursive functions. Perhaps, before jumping to reason about
+stack blowups, I might first check: is the function tail recursive?</p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>Going by various sources online, this is also referred to simply as an &ldquo;efficient tail call implementation&rdquo;.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[I Started a Blog!]]></title>

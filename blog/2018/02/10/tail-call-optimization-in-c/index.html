@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Shubham Lagwankar's website</title>
+  <title>Tail Recursion Optimization in C - Shubham Lagwankar's website</title>
   <meta name="author" content="Shubham Lagwankar">
 
   
@@ -40,7 +40,7 @@ source code of ag: 1
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ssbl.github.io/">
+  <link rel="canonical" href="http://ssbl.github.io/blog/2018/02/10/tail-call-optimization-in-c/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Shubham Lagwankar's website" type="application/atom+xml">
@@ -84,15 +84,12 @@ source code of ag: 1
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2018/02/10/tail-call-optimization-in-c/">Tail Recursion Optimization in C</a></h1>
+      <h1 class="entry-title">Tail Recursion Optimization in C</h1>
     
     
       <p class="meta">
@@ -105,7 +102,7 @@ Feb 10, 2018
   </header>
 
 
-  <div class="entry-content"><p>I recently came across a recursive binary search implementation in the
+<div class="entry-content"><p>I recently came across a recursive binary search implementation in the
 source code of <a href="https://github.com/ggreer/the_silver_searcher">ag</a>:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -278,46 +275,40 @@ stack blowups, I might first check: is the function tail recursive?</p>
 </div>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2018/01/31/first-post/">I Started a Blog!</a></h1>
-    
-    
-      <p class="meta">
-        
 
-Jan 31, 2018
-        
-      </p>
-    
-  </header>
+<span class="categories">
+  Tags:
+  
+    <a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/compilers/'>compilers</a>, <a class='category' href='/blog/categories/recursion/'>recursion</a>
+  
+</span>
 
 
-  <div class="entry-content"><p>At the advice of an old friend, I&rsquo;ve started a blog. I don&rsquo;t have
-great plans for it; I hope that I get a better idea about things in
-the process of putting stuff here.</p>
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2018/01/31/first-post/" title="Previous Post: i started a blog!">&laquo; i started a blog!</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -337,6 +328,7 @@ the process of putting stuff here.</p>
 
   
 </aside>
+
 
     </div>
   </div>
